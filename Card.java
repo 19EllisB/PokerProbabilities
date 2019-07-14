@@ -142,7 +142,7 @@ public class Card {
             rankString = rankToString(rank);
             suitString = suitToString(suit);
             cardName = "The " + rankString + " of " + suitString;
-            shortName = rankToShortString(rank) + "o" + suitToShortString(suit);
+            shortName = "[" +rankToShortString(rank) + "" + suitToShortString(suit) + "]";
         }
     }
 }
