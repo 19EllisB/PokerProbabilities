@@ -11,6 +11,7 @@ class Table {
         board = new Deck(false);
         cardsOnBoard = 0;
         //asks the user a series of inputs to build the board
+        
         //first determine the number of players
         int numOfPlayers;//stores the user's input
         System.out.printf("How many players are in the hand? [Enter an int] %n");
@@ -26,6 +27,7 @@ class Table {
             players.get(i).hand.add(new Card()); //prompts the user to input a card and adds it to that player's hand
             players.get(i).hand.add(new Card());            
         }  
+        
         //next fills in the cards on the board
         System.out.println("How many cards are on the board?");
         cardsOnBoard = input.nextInt();
@@ -36,6 +38,7 @@ class Table {
             }
             board.add(new Card());
         }
+        
         //prints the finished result
         System.out.printf("Done %n %n"); //Top buffer
         for (Player p: players) { //prints players' hands
