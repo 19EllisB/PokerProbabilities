@@ -22,6 +22,11 @@ class Table {
             //asks for the player's info
             System.out.printf("What is Player %d's name?%n", i+1);
             players.get(i).setUsername(input.nextLine()); //set's that player's name to the next input
+            System.out.println("Their hand? [Two consecutive inputs]");
+            players.get(i).hand.add(new Card()); //prompts the user to input a card and adds it to that player's hand
+            players.get(i).hand.add(new Card());
+            
+            System.out.printf("%s: %s %s%n", players.get(i).username, players.get(i).hand.get(0).shortName, players.get(i).hand.get(1).shortName); 
         }        
     }
     

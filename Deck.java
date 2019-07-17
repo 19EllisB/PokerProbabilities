@@ -134,6 +134,14 @@ class Deck {
     void add(Card newCard){
         inDeck.add(newCard);
     }
+    
+    Card get(int index) throws IndexOutOfBoundsException{
+        if (index < 0 || index >= inDeck.size()) {
+            throw new IndexOutOfBoundsException();
+        } else {
+            return inDeck.get(index);
+        }
+    }
     //Empties the deck
     void clear(){
         inDeck.clear();
