@@ -90,7 +90,7 @@ public class Card {
             case 9: 
             return "9";
             case 10: 
-            return "10";
+            return "T";
             case JACK: 
             return "J";
             case QUEEN: 

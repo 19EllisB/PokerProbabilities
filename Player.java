@@ -16,6 +16,10 @@ class Player {
     void setUsername(String username) {
         this.username = username;
     }
+    
+    void setHand(Deck hand) {
+        this.hand = hand;
+    }
     //resets the player's hand to empty
     void reset() {
         hand.clear();
