@@ -24,10 +24,28 @@ class Table {
             players.get(i).setUsername(input.nextLine()); //set's that player's name to the next input
             System.out.println("Their hand? [Two consecutive inputs]");
             players.get(i).hand.add(new Card()); //prompts the user to input a card and adds it to that player's hand
-            players.get(i).hand.add(new Card());
-            
-            System.out.printf("%s: %s %s%n", players.get(i).username, players.get(i).hand.get(0).shortName, players.get(i).hand.get(1).shortName); 
-        }        
+            players.get(i).hand.add(new Card());            
+        }  
+        //next fills in the cards on the board
+        System.out.println("How many cards are on the board?");
+        cardsOnBoard = input.nextInt();
+        input.nextLine();
+        for (int i = 0; i < cardsOnBoard; i++) {//asks the user to input the board cards
+            if (i == 0) {
+                System.out.printf("The board cards? [%d consecutive inputs]%n", cardsOnBoard);
+            }
+            board.add(new Card());
+        }
+        //prints the finished result
+        System.out.printf("Done %n %n"); //Top buffer
+        for (Player p: players) { //prints players' hands
+            System.out.printf("%s: %s %s%n", p.username, p.hand.get(0).shortName, p.hand.get(1).shortName); 
+        }
+        System.out.printf("Board: ");
+        for (int i = 0; i < cardsOnBoard; i++) { //[rints the board cards
+            System.out.printf("%s ", board.get(i).shortName);
+        }
+        System.out.printf("%n%n"); //bottom buffer
     }
     
     public static void main(String[] args) {
