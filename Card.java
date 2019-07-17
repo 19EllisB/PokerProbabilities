@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 
 public class Card {
 
@@ -129,6 +131,23 @@ public class Card {
             return "S";
             default:
             return null;
+        }
+    }
+    
+    Card() { //uses user input to create a card, imperative that the user gets it right, no safeguards against failure
+        String choice; //stores the user's input
+        Scanner input = new Scanner(System.in);
+        /*
+         * When inputing a card's info, use a string in the following format: RS 
+         *      where R is the card's rank (T is used in place of 10) and S is the cards suit
+         *      C for clubs
+         *      D for diamonds
+         *      H for hearts
+         *      S for spades
+         */        
+        choice = input.nextLine();
+        for(char c: choice.toCharArray()) {
+           //put the switch statement here 
         }
     }
     
