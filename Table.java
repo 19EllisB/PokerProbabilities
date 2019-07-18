@@ -40,6 +40,10 @@ class Table {
         }
         
         //prints the finished result
+        printComponents();
+    }
+    
+    public void printComponents() { //Prints the player's cards along with the board
         System.out.printf("Done %n %n"); //Top buffer
         for (Player p: players) { //prints players' hands
             System.out.printf("%s: %s %s%n", p.username, p.hand.get(0).shortName, p.hand.get(1).shortName); 
@@ -49,6 +53,13 @@ class Table {
             System.out.printf("%s ", board.get(i).shortName);
         }
         System.out.printf("%n%n"); //bottom buffer
+    }
+    
+    public void addCard() {
+        if (cardsOnBoard < 5) {
+            cardsOnBoard++;
+            board.add(new Card());
+        }
     }
     
     public static void main(String[] args) {

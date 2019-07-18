@@ -1,6 +1,8 @@
 
 class Player {
     Deck hand;
+    Deck outs = new Deck(false);
+    double odds = 0.0;
     String username;
     
     Player() {
