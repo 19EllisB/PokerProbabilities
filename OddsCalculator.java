@@ -17,5 +17,24 @@ class OddsCalculator {
         this.cardsOnBoard = table.cardsOnBoard;
         
         //populates sevenCardHands
+        for (int i = 0; i < table.players.size(); i++) {
+            sevenCardHands.add(new Deck(false));
+            for (Card c: table.board.inDeck) {
+                sevenCardHands.get(i).add(c);
+            }
+            for (Card c: table.players.get(i).hand.inDeck) {
+                sevenCardHands.get(i).add(c);
+            }
+        }
+    }
+    
+    void appraiseHands() { //takes a 7 card hand and evaluates its value as a 5 card hand 
+        for (int i = 0; i < sevenCardHands.size(); i++) { //for each hand in 7CardHands
+            if (sevenCardHands.get(i).inDeck.size() != 7) { //if the size of the hand != 7
+                System.out.println("I can't appraise a hand of not 7 cards :( ");
+            } else {
+                //resume work here
+            }
+        }
     }
 }   
