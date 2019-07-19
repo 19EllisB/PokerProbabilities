@@ -42,12 +42,12 @@ class Table {
         }
         
         //removes the named cards from deck
-        for (Player p: players) {
-            for (Card c: p.hand.inDeck) {
-                deck.remove(c);
+        for (Player p: players) { //for each player in the hand
+            for (Card c: p.hand.inDeck) { //for each card in their pocket
+                deck.remove(c); //remove that card from the table's deck
             }
         }
-        for (Card c: board.inDeck) {
+        for (Card c: board.inDeck) { //for each card on the board
             deck.remove(c);
         }
         //prints the finished result
@@ -74,12 +74,14 @@ class Table {
             Card cardToAdd = new Card();
             board.add(cardToAdd);
             deck.remove(cardToAdd);
-        }
-        printComponents();
+            printComponents();
+        } else {
+            System.out.println("The river card is already on the table.");
+        }        
     }
     
     public static void main(String[] args) {
         Table t = new Table();
-        //t.addCard();
+        t.addCard();
     }
 }   
