@@ -2,6 +2,7 @@ import java.util.*;
 
 class Table {
     ArrayList<Player> players;
+    Deck deck; //the deck the cards are drawn from
     Deck board; //the cards on the tableau
     int cardsOnBoard; //the number of cards on the board, used mainly by the calculator
     
@@ -9,6 +10,7 @@ class Table {
         //creates an empty list of players and an empty board
         players = new ArrayList<Player>();
         board = new Deck(false);
+        deck = new Deck();
         cardsOnBoard = 0;
         //asks the user a series of inputs to build the board
         
@@ -39,6 +41,15 @@ class Table {
             board.add(new Card());
         }
         
+        //removes the named cards from deck
+        for (Player p: players) {
+            for (Card c: p.hand.inDeck) {
+                deck.remove(c);
+            }
+        }
+        for (Card c: board.inDeck) {
+            deck.remove(c);
+        }
         //prints the finished result
         printComponents();
     }
@@ -51,18 +62,24 @@ class Table {
         System.out.printf("Board: ");
         for (int i = 0; i < cardsOnBoard; i++) { //[rints the board cards
             System.out.printf("%s ", board.get(i).shortName);
-        }
+        }        
         System.out.printf("%n%n"); //bottom buffer
+        //deck.printComponents();
+        //System.out.printf("%nNo. of cards in deck: %d%n", deck.inDeck.size());
     }
     
     public void addCard() {
         if (cardsOnBoard < 5) {
             cardsOnBoard++;
-            board.add(new Card());
+            Card cardToAdd = new Card();
+            board.add(cardToAdd);
+            deck.remove(cardToAdd);
         }
+        printComponents();
     }
     
     public static void main(String[] args) {
         Table t = new Table();
+        //t.addCard();
     }
 }   

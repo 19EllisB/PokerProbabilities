@@ -67,28 +67,26 @@ class Deck {
     int count() {
         return inDeck.size();
     }
-    //Checks for a specific card in the deck
-    boolean check(Card templateCard){
+    //Checks for a specific card in the deck, returns the index of the card, -1 if not in
+    int check(Card templateCard){
         int templateRank = templateCard.rankValue;
         int templateSuit = templateCard.suitValue;
-        boolean cardIn = false;
-        for (Card currentCard: inDeck){
-            //Looks through each item in the deck, if one matches returns true
-            if (templateRank == currentCard.rankValue && templateSuit == currentCard.suitValue){
-                cardIn = true;
+        for (int i = 0; i < inDeck.size(); i++){
+            //Looks through each item in the deck, if one matches returns that cards index
+            if (templateRank == inDeck.get(i).rankValue && templateSuit == inDeck.get(i).suitValue){                
+                return i;
             }
         }
-        return cardIn;
+        return -1; //if nothing matches
     }
     //Same as previous but uses ints as opposed to a card object
-    boolean check(int rank, int suit){
-        boolean cardIn = false;
-        for (Card currentCard: inDeck){
-            if (rank == currentCard.rankValue && suit == currentCard.suitValue){
-                cardIn = true;
+    int check(int rank, int suit){
+        for (int i = 0; i < inDeck.size(); i++){
+            if (rank == inDeck.get(i).rankValue && suit == inDeck.get(i).suitValue){
+                return i;
             }
         }
-        return cardIn;
+        return -1;
     }
     //Checks for a suit in a deck
     boolean checkSuit(int suitCheck){
@@ -125,6 +123,15 @@ class Deck {
         } else {
            System.out.println("Error: discardPos is outside deck size. You can't discard what ain't there."); 
         }
+    }
+    //removes a specified card from the deck, returns true if the list was changed as a result of the call
+    void remove(Card card) {
+         int indexToRemove = check(card);
+         if (indexToRemove < 0) {
+             System.out.println("The card you wanted to remove is not in this deck.");
+         } else {
+             inDeck.remove(indexToRemove);
+         }
     }
     //Shuffles the deck
     void shuffle() {
