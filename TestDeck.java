@@ -1,8 +1,9 @@
+import java.util.*;
 
 class TestDeck {
     public static void main(String[] args) {
-        Deck d = new Deck();
-        d.remove(new Card(1,1));
+        Deck d = new Deck(true);
+        Collections.sort(d.inDeck, new SortBySuit());
         d.printComponents();
     }
 }
