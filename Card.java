@@ -122,13 +122,13 @@ public class Card {
     public static String suitToShortString(int newSuit) {
         switch (newSuit) {
             case DIAMONDS:
-            return "D";
+            return "d";
             case CLUBS:
-            return "C";
+            return "c";
             case HEARTS:
-            return "H";
+            return "h";
             case SPADES:
-            return "S";
+            return "s";
             default:
             return null;
         }
