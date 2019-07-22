@@ -106,8 +106,8 @@ class OddsCalculator {
                         }
                     }
                 }
-                //Sorts the 7 Card hand in order of rankValue, highest to lowest [Ace = 14 not 1]                
-                
+              
+                Deck straightFlaggedCards = new Deck(false);                
                 Deck duplicateCards = new Deck(false); //stores removed dupe cards so they dont get destroyed
                 //checks for straights
                 for (int j = 0; j <= sevenCardHands.get(i).inDeck.size() - 4; j++) { //for each possible group of 4 ordered cards, duplicate cards are removed in case ranks are repeated in the middle of a straight                     
@@ -116,6 +116,7 @@ class OddsCalculator {
                             //if the player gets a wheel [A2345], ie if k == 3 and if the current card is a 2 and if the hand has an ace
                             if (k == 3 && sevenCardHands.get(i).inDeck.get(j + k).rankValue == 2 && sevenCardHands.get(i).checkRank(Card.ACE)) {
                                 isStraight = true;
+                                //straightFlaggedCards.add(sevenCardHands.get(i).inDeck.get(0));
                             }
                             
                             //break conditions                            

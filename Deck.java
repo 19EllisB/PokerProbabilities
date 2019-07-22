@@ -66,7 +66,7 @@ class Deck {
 
     int count() {
         return inDeck.size();
-    }
+    }   
     //Checks for a specific card in the deck, returns the index of the card, -1 if not in
     int check(Card templateCard){
         int templateRank = templateCard.rankValue;

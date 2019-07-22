@@ -220,6 +220,14 @@ public class Card {
         shortName = "[" +rankToShortString(rankValue) + "" + suitToShortString(suitValue) + "]";
     }
     
+    public boolean equals(Card templateCard) {
+        if (templateCard.rankValue == this.rankValue && templateCard.suitValue == this.suitValue) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     Card (int rank, int suit) throws RuntimeException{
         if (rank > 14 || rank < 1 || suit > 4 || suit < 1) {
             throw new RuntimeException();
