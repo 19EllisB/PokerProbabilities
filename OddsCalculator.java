@@ -35,103 +35,58 @@ class OddsCalculator {
             } else { 
                 Deck flaggedCards = new Deck(false);//creates an empty deck to place cards flagged by the following methods
                 //flags for determining hands, self-explanatory
+                boolean isStraightFlush = false;
                 boolean isFlush = false;
                 boolean isStraight = false;
                 boolean isQuads = false;
                 boolean isTrips = false;
                 boolean isPair = false;
 
-                //checks for flushes first
-                Deck flushFlaggedCards = new Deck(false);
-                int diamonds = 0; //counts the number of cards in each suit
-                int clubs = 0;
-                int hearts = 0;
-                int spades = 0;
-                for (Card c: sevenCardHands.get(i).inDeck) {
-                    switch (c.suitValue) {
-                        case Card.DIAMONDS:
-                        diamonds++;
-                        break;
-                        case Card.CLUBS:
-                        clubs++;
-                        break;
-                        case Card.HEARTS:
-                        hearts++;
-                        break;
-                        case Card.SPADES:
-                        spades++;
-                        break;
-                        default:
-                        System.out.println("The for loop which checks for flushes in OddsCalculator broke");
-                    }
-                }
-                if (diamonds >= 5 ||
-                clubs >= 5 ||
-                hearts >= 5 ||
-                spades >= 5) {
-                    isFlush = true;
-                }
-                //sorts the cards by rank, the cards are not unordered later in this method so it's fine to do it here [ace = 14, not 1]
-                Collections.sort(sevenCardHands.get(i).inDeck, new SortByRank());
-                //places the relevant cards in the flushFlaggedCards Deck
-                if (isFlush) {
-                    int cardsSelected = 0; //keeps track of how many cards have been added to the flagged deck
-                    if (diamonds >= 5) { //if you have a diamonds flush                    
-                        for (int j = 0; j < sevenCardHands.get(i).inDeck.size(); j++) { //for every card in the 7Card hand
-                            if (sevenCardHands.get(i).inDeck.get(j).suitValue == Card.DIAMONDS && cardsSelected < 5) { //if its the appropriate suit and fewer than 5 cards have been flagged
-                                flushFlaggedCards.add(sevenCardHands.get(i).inDeck.get(j)); //flag the card
-                                cardsSelected++; //increment the counter
-                            }
-                        }
-                    } else if (clubs >= 5) {
-                        for (int j = 0; j < sevenCardHands.get(i).inDeck.size(); j++) { //for every card in the 7Card hand
-                            if (sevenCardHands.get(i).inDeck.get(j).suitValue == Card.CLUBS && cardsSelected < 5) { //if its the appropriate suit and fewer than 5 cards have been flagged
-                                flushFlaggedCards.add(sevenCardHands.get(i).inDeck.get(j)); //flag the card
-                                cardsSelected++; //increment the counter
-                            }
-                        }
-                    }  else if (hearts >= 5) {
-                        for (int j = 0; j < sevenCardHands.get(i).inDeck.size(); j++) { //for every card in the 7Card hand
-                            if (sevenCardHands.get(i).inDeck.get(j).suitValue == Card.HEARTS && cardsSelected < 5) { //if its the appropriate suit and fewer than 5 cards have been flagged
-                                flushFlaggedCards.add(sevenCardHands.get(i).inDeck.get(j)); //flag the card
-                                cardsSelected++; //increment the counter
-                            }
-                        }
-                    }  else if (spades >= 5) {
-                        for (int j = 0; j < sevenCardHands.get(i).inDeck.size(); j++) { //for every card in the 7Card hand
-                            if (sevenCardHands.get(i).inDeck.get(j).suitValue == Card.SPADES && cardsSelected < 5) { //if its the appropriate suit and fewer than 5 cards have been flagged
-                                flushFlaggedCards.add(sevenCardHands.get(i).inDeck.get(j)); //flag the card
-                                cardsSelected++; //increment the counter
-                            }
-                        }
-                    }
-                }
-              
-                Deck straightFlaggedCards = new Deck(false);                
+                Collections.sort(sevenCardHands.get(i).inDeck, new SortByRank());                                              
+
                 Deck duplicateCards = new Deck(false); //stores removed dupe cards so they dont get destroyed
                 //checks for straights
                 for (int j = 0; j <= sevenCardHands.get(i).inDeck.size() - 4; j++) { //for each possible group of 4 ordered cards, duplicate cards are removed in case ranks are repeated in the middle of a straight                     
                     if (sevenCardHands.get(i).inDeck.size() >= 5) { //in order for a straight to be possible there must still be at least 5 non-dupe cards remaining
-                        for (int k = 0; k < 4; k++) { //for the 4 cards in that grouping
-                            //if the player gets a wheel [A2345], ie if k == 3 and if the current card is a 2 and if the hand has an ace
-                            if (k == 3 && sevenCardHands.get(i).inDeck.get(j + k).rankValue == 2 && sevenCardHands.get(i).checkRank(Card.ACE)) {
-                                isStraight = true;
-                                //straightFlaggedCards.add(sevenCardHands.get(i).inDeck.get(0));
-                            }
-                            
+                        kLoop:
+                        for (int k = 0; k < 4; k++) { //for the 4 cards in that grouping                            
+
                             //break conditions                            
                             if (j + k + 1 >= sevenCardHands.get(i).inDeck.size()) { //if the index of the "next card" is out of bounds
                                 break; //else if the rank of the next card in the grouping is greater than one less than the current card in the grouping
                             } else if (sevenCardHands.get(i).inDeck.get(j + k).rankValue - sevenCardHands.get(i).inDeck.get(j + k + 1).rankValue > 1) {                            
-                                break; //move on to the next grouping, else if the rank of the next card == the rank of the current card
-                            } else if (sevenCardHands.get(i).inDeck.get(j + k).rankValue - sevenCardHands.get(i).inDeck.get(j + k + 1).rankValue == 0) {
-                                duplicateCards.add(sevenCardHands.get(i).inDeck.get(j + k + 1)); //add the dupe card to the duplicateCards deck so that we don't lose it
-                                sevenCardHands.get(i).inDeck.remove(j + k + 1); //remove the dupe card
-                                k--; //deiterate k so that when we continue k is what it was on the previous loop
-                                continue;
+                                break; //move on to the next grouping
+                            } else if (sevenCardHands.get(i).inDeck.get(j + k).rankValue - sevenCardHands.get(i).inDeck.get(j + k + 1).rankValue == 1 &&
+                            sevenCardHands.get(i).inDeck.get(j + k).suitValue != sevenCardHands.get(i).inDeck.get(j + k + 1).suitValue) {
+                                //if the rank of the next card is 1 less but it's not the same suit
+                                nLoop:
+                                for (int n = 2; n <= 4; n++) { //for the nth card past the current one up to n = 4
+                                    //if the nth card past the current one exists and has the same rank as the card immediately previous
+                                    if ((j + k + n) < sevenCardHands.get(i).inDeck.size()) {
+                                        if (sevenCardHands.get(i).inDeck.get(j + k + n - 1).rankValue == sevenCardHands.get(i).inDeck.get(j + k + n).rankValue) {
+                                            //if the nth card past the current one has the same rank as the current one 
+                                            if (sevenCardHands.get(i).inDeck.get(j + k).suitValue == sevenCardHands.get(i).inDeck.get(j + k + n).suitValue) {
+                                                //remove the dupe cards which dont match the suit so that you don't fuck up how k iterates
+                                                for (int m = n - 1; m > 0; m--) {
+                                                    duplicateCards.add(sevenCardHands.get(i).inDeck.get(j + k + m));
+                                                    sevenCardHands.get(i).remove(sevenCardHands.get(i).inDeck.get(j + k + m));
+                                                }
+                                                //k += n - 1; //redundant with the above for loop 
+                                                break nLoop;
+                                            } else { //else check to see if the next card can be used
+                                                continue;
+                                            }
+                                        } else {
+                                            break kLoop;
+                                        }
+                                    } else { // else youve missed the straight flush entirely
+                                        break kLoop;
+                                    }
+                                }                                
                             }
-                            //straight conditions
                             
+                            //straight conditions
+
                         }
                     }
                 }
