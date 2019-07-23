@@ -99,14 +99,13 @@ class Deck {
         return cardIn;
     }
     //Checks for a rank in a deck
-    boolean checkRank(int rankCheck){
-        boolean cardIn = false;
-        for (Card currentCard: inDeck){
-            if (rankCheck == currentCard.rankValue){
-                cardIn = true;
+    int checkRank(int rank){
+        for (int i = 0; i < inDeck.size(); i++){
+            if (rank == inDeck.get(i).rankValue){
+                return i;
             }
         }
-        return cardIn;
+        return -1;
     }
     //Removes the "top" card without returning it like draw() does
     void discard() {

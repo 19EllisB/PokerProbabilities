@@ -169,7 +169,7 @@ class OddsCalculator {
                 }
 
                 if (isStraightFlush) {
-                    handClasses.add(i, 8);
+                    handClasses.add(i, 9);
                     for (Card c: flaggedCards.inDeck) { //all five cards constitute the player's hand
                         fiveCardHands.get(i).add(c);
                     }
@@ -188,7 +188,119 @@ class OddsCalculator {
                 }
 
                 //next checks for flushes
-                //Collections.sort(sevenCardHands.get(i).inDeck, new SortBySuit());
+                //rank then suit ensures the highest possible ranking flush
+                Collections.sort(sevenCardHands.get(i).inDeck, new SortByRank());
+                Collections.sort(sevenCardHands.get(i).inDeck, new SortBySuit());
+                
+                jLoop:
+                for (int j = 0; j < 3; j++) { //for each grouping of 4 cards in the 7 card hand
+                    kLoop:
+                    for (int k = 0; k < 4; k++) { //for each card in that grouping  
+                        if (sevenCardHands.get(i).inDeck.get(j + k).suitValue != sevenCardHands.get(i).inDeck.get(j + k + 1).suitValue) {
+                            //if the next card is not of the same suit as the current one
+                            break kLoop;
+                        }
+                        if (k == 3) { //if the card after the fourth card is the same suit, youve hit a flush
+                            isFlush = true;
+                            for (int t = 1; t >= -3; t--) { //add the cards to flaggedCards
+                                flaggedCards.add(sevenCardHands.get(i).inDeck.get(j + k + t));
+                            }
+                            break jLoop;
+                        }
+                    }
+                }
+                
+                if (isFlush) {
+                    handClasses.add(i, 6);
+                    for (Card c: flaggedCards.inDeck) { //all five cards constitute the player's hand
+                        fiveCardHands.get(i).add(c);
+                    }
+
+                    fiveCardHands.get(i).absSort();
+                    Integer[] handValue = {new Integer(fiveCardHands.get(i).inDeck.get(0).rankValue)}; //the value of the hand is the highest ranking card
+                    handValues.add(i, handValue); 
+                    continue iLoop;
+                }
+                
+                sevenCardHands.get(i).absSort();
+                
+                //checks for straights
+                jLoop:
+                for (int j = 0; j < 3; j++) {
+                    if (!duplicateCards.inDeck.isEmpty()) { //if the dupe deck has cards in it
+                        for (Card c: duplicateCards.inDeck) { //for every card in the dupe deck
+                            sevenCardHands.get(i).add(c); //add it back to its original hand 
+                        }
+                        duplicateCards.clear(); //clear the dupe deck
+                        //sorts the hand the same way every time
+                        Collections.sort(sevenCardHands.get(i).inDeck, new SortBySuit());
+                        Collections.sort(sevenCardHands.get(i).inDeck, new SortByRank());
+                    }
+                    kLoop:
+                    for (int k = 0; k < 4; k++) {
+                        //wheel conditions [A2345 off suit]
+                        if (k == 3 && 
+                        sevenCardHands.get(i).inDeck.get(j + k).rankValue == Card.TWO && 
+                        sevenCardHands.get(i).checkRank(Card.ACE) >= 0) {
+                            //if youre on the 4th card, and that card is a two, and the hand has an ace 
+                            isStraight = true;
+                            //add the suited ace
+                            flaggedCards.add(sevenCardHands.get(i).inDeck.get(sevenCardHands.get(i).checkRank(Card.ACE)));
+                            //add the other cards
+                            for (int t = 0; t >= -3; t--) { //add those 5 cards to flagged cards
+                                flaggedCards.add(sevenCardHands.get(i).inDeck.get(j + k + t));
+                            }
+                            break jLoop; //leave the j loop
+                        }
+                        
+                        //break conditions                            
+                        if (j + k + 1 >= sevenCardHands.get(i).inDeck.size()) { //if the index of the "next card" is out of bounds
+                            break kLoop; 
+                        } else if (sevenCardHands.get(i).inDeck.get(j + k).rankValue - sevenCardHands.get(i).inDeck.get(j + k + 1).rankValue > 1) {                            
+                            //else if the rank of the next card in the grouping is greater than one less than the current card in the grouping
+                            break kLoop; //move on to the next grouping
+                        } else if (sevenCardHands.get(i).inDeck.get(j + k).rankValue - sevenCardHands.get(i).inDeck.get(j + k + 1).rankValue == 0) {
+                            //else if the rank of the next card equals the rank of the current one
+                            duplicateCards.add(sevenCardHands.get(i).inDeck.get(j + k + 1)); //add the card to the dupe deck
+                            sevenCardHands.get(i).remove(sevenCardHands.get(i).inDeck.get(j + k + 1)); //remove it from this one
+                            k--;
+                            continue kLoop;
+                        }
+                        
+                        //straight conditions
+                        if (k == 3) {
+                            //you know that you have 5 cards in a row that are a straight 
+                            isStraight = true;
+                            for (int t = 1; t >= -3; t--) { //add those 5 cards to flagged cards
+                                flaggedCards.add(sevenCardHands.get(i).inDeck.get(j + k + t));
+                            }
+                            break jLoop; //leave the j loop
+                        }
+                    }
+                }
+                
+                if (isStraight) {
+                    handClasses.add(i, 5);
+                    for (Card c: flaggedCards.inDeck) { //all five cards constitute the player's hand
+                        fiveCardHands.get(i).add(c);
+                    }
+
+                    fiveCardHands.get(i).absSort();
+                    Integer[] handValue = {new Integer(fiveCardHands.get(i).inDeck.get(0).rankValue)}; //the value of the hand is the highest ranking card
+                    handValues.add(i, handValue); 
+                    continue iLoop;
+                }
+                
+                if (!duplicateCards.inDeck.isEmpty()) { //if the dupe deck has cards in it
+                    for (int n = 0; n < duplicateCards.inDeck.size(); n++) { //for every card in the dupe deck
+                        sevenCardHands.get(i).add(duplicateCards.inDeck.get(n)); //add it back to its original hand 
+                    }
+                    duplicateCards.clear(); //clear the dupe deck                        
+                }
+                
+                sevenCardHands.get(i).absSort();
+                
+                
             }
         }
     }
