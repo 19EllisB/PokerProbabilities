@@ -6,7 +6,7 @@ class OddsCalculator {
 
     ArrayList<Deck> sevenCardHands = new ArrayList<Deck>(); //the players cards plus the board cards for each player
     ArrayList<Deck> fiveCardHands = new ArrayList<Deck>(); //the player's 5 card represented hand determined from that player's 7cardHand
-    ArrayList<Integer> handClasses = new ArrayList<Integer>(); // classes can be 0-8, 0 = high card, 8 = straight flush
+    ArrayList<Integer> handClasses = new ArrayList<Integer>(); // classes can be 1-9, 1 = high card, 9 = straight flush
     ArrayList<Integer[]> handValues = new ArrayList<Integer[]>(); //the "values" of each hand, determined uniquely for each hand class
 
     ArrayList<Double> playerOdds = new ArrayList<Double>(); //stores the individual player odds
@@ -25,10 +25,13 @@ class OddsCalculator {
             for (Card c: table.players.get(i).hand.inDeck) {
                 sevenCardHands.get(i).add(c);
             }
+
+            fiveCardHands.add(new Deck(false));            
         }
     }
 
     void appraiseHands() { //takes a 7 card hand and evaluates its value as a 5 card hand 
+        iLoop:
         for (int i = 0; i < sevenCardHands.size(); i++) { //for each hand in 7CardHands, ie for each player
             if (sevenCardHands.get(i).inDeck.size() != 7) { //if the size of the hand != 7
                 System.out.println("I can't appraise a hand of not 7 cards :( ");
@@ -41,7 +44,7 @@ class OddsCalculator {
                 boolean isQuads = false;
                 boolean isTrips = false;
                 boolean isPair = false;
-                
+
                 //sorts the deck in the same way everytime
                 Collections.sort(sevenCardHands.get(i).inDeck, new SortBySuit());
                 Collections.sort(sevenCardHands.get(i).inDeck, new SortByRank());                                              
@@ -75,7 +78,7 @@ class OddsCalculator {
                             }
                             break jLoop; //leave the j loop
                         }
-                        
+
                         //break conditions                            
                         if (j + k + 1 >= sevenCardHands.get(i).inDeck.size()) { //if the index of the "next card" is out of bounds
                             break; 
@@ -117,14 +120,14 @@ class OddsCalculator {
                                 for (int n = 2; n < 4; n++) {
                                     if ((j + k + n) < sevenCardHands.get(i).inDeck.size()) {
                                         if (sevenCardHands.get(i).inDeck.get(j + k).rankValue == sevenCardHands.get(i).inDeck.get(j + k + n).rankValue) {
-                                            //if the nth card past the current one has the same suit as the current one 
+                                            //if the nth card past the current one has the same rank as the current one 
                                             if (n >= 3) { //if four cards in a row have the same rank a straight flush is impossible
                                                 break jLoop;
                                             } else { //keep checking
                                                 continue nLoop;
                                             }
                                         } else if (sevenCardHands.get(i).inDeck.get(j + k).rankValue - sevenCardHands.get(i).inDeck.get(j + k + n).rankValue == 1) {                                        
-                                            //else if the nth card past the current one is the same suit and the next rank down
+                                            //else if the nth card past the current one is the next rank down
                                             //remove the dupe cards which dont match the suit so that you don't fuck up how k iterates
                                             for (int m = n - 1; m > 0; m--) {
                                                 duplicateCards.add(sevenCardHands.get(i).inDeck.get(j + k + m));
@@ -138,9 +141,16 @@ class OddsCalculator {
                                         break kLoop;
                                     }
                                 }
-                            } else { //if it isnt than you know that the current card's suit is the correct one, remove the dupe
-                                duplicateCards.add(sevenCardHands.get(i).inDeck.get(j + k + 1)); //add the card to the dupe deck
-                                sevenCardHands.get(i).remove(sevenCardHands.get(i).inDeck.get(j + k + 1)); //remove it from this one
+                            } else { 
+                                if (sevenCardHands.get(i).inDeck.get(j + k).suitValue == sevenCardHands.get(i).inDeck.get(j + k - 1).suitValue) {
+                                    //if k isnt 0, and the current suit matches the previous card's, than you know that the current card's suit is the correct one, remove the dupe                                  
+                                    duplicateCards.add(sevenCardHands.get(i).inDeck.get(j + k + 1)); //add the card to the dupe deck
+                                    sevenCardHands.get(i).remove(sevenCardHands.get(i).inDeck.get(j + k + 1)); //remove it from this one
+                                } else {
+                                    //else the current suit is incorrect so remove this one
+                                    duplicateCards.add(sevenCardHands.get(i).inDeck.get(j + k)); //add the card to the dupe deck
+                                    sevenCardHands.get(i).remove(sevenCardHands.get(i).inDeck.get(j + k)); //remove it from this one
+                                }                                
                                 k--; //deiterate k so that when you continue, k points to the current card
                                 continue kLoop;
                             }
@@ -157,12 +167,47 @@ class OddsCalculator {
                         }
                     }
                 }
-                
+
                 if (isStraightFlush) {
                     handClasses.add(i, 8);
-                    
+                    for (Card c: flaggedCards.inDeck) { //all five cards constitute the player's hand
+                        fiveCardHands.get(i).add(c);
+                    }
+
+                    fiveCardHands.get(i).absSort();
+                    Integer[] handValue = {new Integer(fiveCardHands.get(i).inDeck.get(0).rankValue)}; //the value of the hand is the highest ranking card
+                    handValues.add(i, handValue); 
+                    continue iLoop;
                 }
+
+                if (!duplicateCards.inDeck.isEmpty()) { //if the dupe deck has cards in it
+                    for (int n = 0; n < duplicateCards.inDeck.size(); n++) { //for every card in the dupe deck
+                        sevenCardHands.get(i).add(duplicateCards.inDeck.get(n)); //add it back to its original hand 
+                    }
+                    duplicateCards.clear(); //clear the dupe deck                        
+                }
+
+                //next checks for flushes
+                //Collections.sort(sevenCardHands.get(i).inDeck, new SortBySuit());
             }
+        }
+    }
+    
+    public static void testMain() {
+        Table table = new Table();
+        OddsCalculator o = new OddsCalculator(table);
+        o.appraiseHands();
+        for (int i = 0; i < table.players.size(); i++) {
+            System.out.printf("%n Seven: %n");
+            o.sevenCardHands.get(i).printComponents();
+            System.out.printf("%n Five: %n");
+            o.fiveCardHands.get(i).printComponents();
+            System.out.printf("%nClass: %d%n", o.handClasses.get(i));
+            System.out.printf("Value: ");
+            for (Integer num: o.handValues.get(i)) {
+                System.out.println(num.intValue() + "");
+            }
+            
         }
     }
 }   

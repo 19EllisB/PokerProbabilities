@@ -168,6 +168,11 @@ class Deck {
             System.out.println(inDeck.get(k).cardName + ", " + inDeck.get(k).shortName);
         }
     }
+    //sorts the deck absolutely, any two deck with the same cards will be sorted the same no matter the order
+    void absSort() {
+        Collections.sort(inDeck, new SortBySuit());
+        Collections.sort(inDeck, new SortByRank());        
+    }
     //Combines two decks, deleting the old one
     void merge(Deck newDeck){
         for (Card currentCard: newDeck.inDeck){

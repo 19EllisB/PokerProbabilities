@@ -11,11 +11,16 @@ class TestDeck {
         Deck d1 = new Deck(true);
         Deck d2 = new Deck(true);
         
+        /*
         Collections.sort(d1.inDeck, new SortBySuit());
         Collections.sort(d2.inDeck, new SortBySuit());
         
         Collections.sort(d1.inDeck, new SortByRank());
         Collections.sort(d2.inDeck, new SortByRank());
+        */
+       
+        d1.absSort();
+        d2.absSort(); 
         
         d1.printComponents();
         System.out.println("");
