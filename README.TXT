@@ -76,3 +76,27 @@ USER INSTRUCTIONS:
                         }
                     }
                 }
+                
+                
+                Deck duplicateCards = new Deck(false); //stores removed dupe cards so they dont get destroyed
+                //checks for straights
+                for (int j = 0; j <= sevenCardHands.get(i).inDeck.size() - 4; j++) { //for each possible group of 4 ordered cards, duplicate cards are removed in case ranks are repeated in the middle of a straight                     
+                    if (sevenCardHands.get(i).inDeck.size() >= 5) { //in order for a straight to be possible there must still be at least 5 non-dupe cards remaining
+                        for (int k = 0; k < 4; k++) { //for the 4 cards in that grouping                            
+                            
+                            //break conditions                            
+                            if (j + k + 1 >= sevenCardHands.get(i).inDeck.size()) { //if the index of the "next card" is out of bounds
+                                break; //else if the rank of the next card in the grouping is greater than one less than the current card in the grouping
+                            } else if (sevenCardHands.get(i).inDeck.get(j + k).rankValue - sevenCardHands.get(i).inDeck.get(j + k + 1).rankValue > 1) {                            
+                                break; //move on to the next grouping, else if the rank of the next card == the rank of the current card
+                            } else if (sevenCardHands.get(i).inDeck.get(j + k).rankValue - sevenCardHands.get(i).inDeck.get(j + k + 1).rankValue == 0) {
+                                duplicateCards.add(sevenCardHands.get(i).inDeck.get(j + k + 1)); //add the dupe card to the duplicateCards deck so that we don't lose it
+                                sevenCardHands.get(i).inDeck.remove(j + k + 1); //remove the dupe card
+                                k--; //deiterate k so that when we continue k is what it was on the previous loop
+                                continue;
+                            }
+                            //straight conditions
+                            
+                        }
+                    }
+                }
