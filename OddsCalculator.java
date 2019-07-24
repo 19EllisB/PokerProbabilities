@@ -411,10 +411,11 @@ class OddsCalculator {
                         fiveCardHands.get(i).add(flaggedCards.inDeck.get(t));
                     }
                     
-                    for (int t = 4; t < flaggedCards.inDeck.size(); t ++) { //add back a third pair if it was flagged
+                    //im pretty sure i accounted for this possibility already in the pair checking algorithm, ignore it for now
+                    /*for (int t = 4; t < flaggedCards.inDeck.size(); t ++) { //add back a third pair if it was flagged
                         sevenCardHands.get(i).add(flaggedCards.inDeck.get(t));
                     }
-                    sevenCardHands.get(i).absSort(); 
+                    sevenCardHands.get(i).absSort(); */
                     
                     int currentFiveCardSize = fiveCardHands.get(i).inDeck.size();
                     for (int t = 0; t < 5 - currentFiveCardSize; t++) { //until the five card had is five cards full, add kickers there are no additional cards in flaggedCards
@@ -424,7 +425,34 @@ class OddsCalculator {
                     Integer[] handValue = {new Integer(flaggedCards.inDeck.get(0).rankValue), new Integer(flaggedCards.inDeck.get(2).rankValue)}; //the value of the hand is the rank of the quad
                     handValues.add(i, handValue);
                     continue iLoop;
-                } 
+                } else if (isPair) {
+                    //else if the hand is just a pair
+                    handClasses.add(i, 2);
+                    for (int t = 0; t < 2; t++) { //first 2 flagged cards constitute the player's hand
+                        fiveCardHands.get(i).add(flaggedCards.inDeck.get(t));
+                    }
+                    
+                    int currentFiveCardSize = fiveCardHands.get(i).inDeck.size();
+                    for (int t = 0; t < 5 - currentFiveCardSize; t++) { //until the five card had is five cards full, add kickers there are no additional cards in flaggedCards
+                        fiveCardHands.get(i).add(sevenCardHands.get(i).inDeck.get(t));//add the highest ranking card in the 7 card hand as a kicker
+                    }
+                    
+                    Integer[] handValue = {new Integer(flaggedCards.inDeck.get(0).rankValue)}; //the value of the hand is the rank of the pair
+                    handValues.add(i, handValue);
+                    continue iLoop;
+                } else {
+                    //else if the hand is just a high card 
+                    handClasses.add(i, 1);
+                    
+                    int currentFiveCardSize = fiveCardHands.get(i).inDeck.size();
+                    for (int t = 0; t < 5 - currentFiveCardSize; t++) { //until the five card had is five cards full, add kickers there are no additional cards in flaggedCards
+                        fiveCardHands.get(i).add(sevenCardHands.get(i).inDeck.get(t));//add the highest ranking card in the 7 card hand as a kicker
+                    }
+                    
+                    Integer[] handValue = {new Integer(fiveCardHands.get(i).inDeck.get(0).rankValue)}; //the value of the hand is the rank of the pair
+                    handValues.add(i, handValue);
+                    continue iLoop;
+                }
             }
         }
     }
