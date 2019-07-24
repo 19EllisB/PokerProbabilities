@@ -375,7 +375,39 @@ class OddsCalculator {
                         }
                     }                    
                 }
-                //end edit
+                
+                //assigns combo hands
+                //if the hand is a full house
+                if (isTrips && isPair) { 
+                     handClasses.add(i, 7);
+                    for (int t = 0; t < 5; t++) { //first 5 flagged cards constitute the player's hand, trips are added before the highest pair
+                        fiveCardHands.get(i).add(flaggedCards.inDeck.get(t));
+                    }
+                    
+                    Integer[] handValue = {new Integer(flaggedCards.inDeck.get(0).rankValue), new Integer(flaggedCards.inDeck.get(3).rankValue)}; //the value of the hand is the rank of the quad
+                    handValues.add(i, handValue);
+                    continue iLoop;  
+                } else if (isTrips) {
+                    //else if the hand is a set
+                    handClasses.add(i, 4); 
+                    for (int t = 0; t < 3; t++) { //first 3 flagged cards constitute the player's hand, trips are added into flagged cards before the highest pair
+                        fiveCardHands.get(i).add(flaggedCards.inDeck.get(t));
+                    }
+                    
+                    for (int t = 0; t < 5 - fiveCardHands.get(i).inDeck.size(); t++) { //until the five card had is five cards full, add kickers
+                        fiveCardHands.get(i).add(sevenCardHands.get(i).inDeck.get(t));//add the highest ranking card in the 7 card hand as a kicker
+                    }
+                    
+                    Integer[] handValue = {new Integer(flaggedCards.inDeck.get(0).rankValue)}; //the value of the hand is the rank of the trip
+                    handValues.add(i, handValue);
+                    continue iLoop;
+                } else if (isTwoPair) {
+                    //else if the hand is a Two Pair
+                    handClasses.add(i, 3);
+                    for (int t = 0; t < 4; t++) { //first 4 flagged cards constitute the player's hand, high pair then low pair
+                        fiveCardHands.get(i).add(flaggedCards.inDeck.get(t));
+                    }
+                }
             }
         }
     }
