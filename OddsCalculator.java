@@ -335,7 +335,47 @@ class OddsCalculator {
                     handValues.add(i, handValue);
                     continue iLoop;
                 }
-                //adding a comment to see if it's viable
+                
+                //checks for trips next
+                
+                jLoop:
+                for (int j = 0; j < 5; j++) {
+                    kLoop:
+                    for (int k = 0; k < 2; k++) {
+                        if (sevenCardHands.get(i).inDeck.get(j + k).rankValue != sevenCardHands.get(i).inDeck.get(j + k + 1).rankValue) {
+                            //if the next card is not of the same rank as the current one
+                            break kLoop;
+                        }
+                        if (k == 1) { //if the card after the second card is the same rank, youve hit a set
+                            isTrips = true;
+                            for (int t = 1; t >= -1; t--) { //add the cards to flaggedCards and remove them from sevenCardsHands.get(i)
+                                flaggedCards.add(sevenCardHands.get(i).inDeck.get(j + k + t));
+                                sevenCardHands.get(i).remove(sevenCardHands.get(i).inDeck.get(j + k + t)); //remove it from this one
+                            }
+                            break jLoop;
+                        }
+                    }
+                }
+                
+                //finally checks for pairs
+                
+                jLoop:
+                for (int j = 0; j < 6; j++) {
+                    if (!isTwoPair) {
+                        if (sevenCardHands.get(i).inDeck.get(j).rankValue == sevenCardHands.get(i).inDeck.get(j + 1).rankValue) {
+                            if (isPair == true) {
+                                isTwoPair = true;   
+                            } else {
+                                isPair = true;   
+                            }
+                            for (int t = 1; t >= 0; t--) { //add the cards to flaggedCards and remove them from sevenCardsHands.get(i)
+                                flaggedCards.add(sevenCardHands.get(i).inDeck.get(j + k + t));
+                                sevenCardHands.get(i).remove(sevenCardHands.get(i).inDeck.get(j + k + t)); //remove it from this one
+                            }
+                        }
+                    }                    
+                }
+                //end edit
             }
         }
     }
