@@ -461,6 +461,10 @@ class OddsCalculator {
             }
         }
     }
+    
+    public void compareHands() {
+        
+    }
 
     public static void testMain() {
         Table table = new Table();
