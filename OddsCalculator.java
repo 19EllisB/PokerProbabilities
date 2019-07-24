@@ -11,6 +11,9 @@ class OddsCalculator {
 
     ArrayList<Double> playerOdds = new ArrayList<Double>(); //stores the individual player odds
     double splitOdds; //the odds of a split pot
+    
+    ArrayList<Deck> playerOuts = new ArrayList<Deck>(); //stored the individual players out cards
+    Deck splitOuts = new Deck(false); //stores the cards which result in a split
 
     OddsCalculator(Table table) {
         this.table = table;
@@ -463,7 +466,10 @@ class OddsCalculator {
     }
     
     public void compareHands() {
-        
+        int winningIndex = 0;
+        for (int i = 1; i < table.players.size(); i++) {
+            
+        }
     }
 
     public static void testMain() {
