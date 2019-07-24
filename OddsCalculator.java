@@ -369,8 +369,8 @@ class OddsCalculator {
                                 isPair = true;   
                             }
                             for (int t = 1; t >= 0; t--) { //add the cards to flaggedCards and remove them from sevenCardsHands.get(i)
-                                flaggedCards.add(sevenCardHands.get(i).inDeck.get(j + k + t));
-                                sevenCardHands.get(i).remove(sevenCardHands.get(i).inDeck.get(j + k + t)); //remove it from this one
+                                flaggedCards.add(sevenCardHands.get(i).inDeck.get(j + t));
+                                sevenCardHands.get(i).remove(sevenCardHands.get(i).inDeck.get(j + t)); //remove it from this one
                             }
                         }
                     }                    
