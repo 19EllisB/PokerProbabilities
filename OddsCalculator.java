@@ -29,7 +29,8 @@ class OddsCalculator {
                 sevenCardHands.get(i).add(c);
             }
 
-            fiveCardHands.add(new Deck(false));            
+            fiveCardHands.add(new Deck(false));
+            playerOuts.add(new Deck(false));
         }
     }
 
@@ -515,7 +516,13 @@ class OddsCalculator {
             }
         }
         
-        
+        if (isSplit && splittingIndex == winningIndex) {
+            //if the pot is genuinely split
+            splitOuts.add(table.board.get(4)); //add the river card to split outs   
+        } else {
+            //else there is a clear winner
+            playerOuts.get(winningIndex).add(table.board.get(4));
+        }
     }
 
     public static void testMain() {
