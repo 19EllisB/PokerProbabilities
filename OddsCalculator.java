@@ -540,16 +540,16 @@ class OddsCalculator {
     }
 
     void calculateOdds() {
-        int total = 0; //stores the total number of outs that have been calculated
+        double total = 0; //stores the total number of outs that have been calculated
         for (Deck d: playerOuts) {
             total += d.inDeck.size();   
         }
         total += splitOuts.inDeck.size();
 
         for (int i = 0; i < table.players.size(); i++) {
-            playerOdds.add(i, new Double((playerOuts.get(i).inDeck.size() / total) * 100));   
+            playerOdds.add(i, new Double(((double) playerOuts.get(i).inDeck.size() / total) * 100));   
         }
-        splitOdds = (splitOuts.inDeck.size() / total) * 100;
+        splitOdds = ((double) splitOuts.inDeck.size() / total) * 100;
     }
 
     void printOdds() {
@@ -628,7 +628,8 @@ class OddsCalculator {
 
             o1.calculateOdds();
             o1.printOdds();
-
+            
+            System.out.printf("%nThe Turn? %n");
             externalTable.addCard();
 
             case 4: //if the turn is down
@@ -646,6 +647,7 @@ class OddsCalculator {
             o2.calculateOdds();
             o2.printOdds();
 
+            System.out.printf("%nThe River? %n");
             externalTable.addCard();
             
             case 5: //if the river is 
