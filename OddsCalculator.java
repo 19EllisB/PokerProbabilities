@@ -192,7 +192,7 @@ class OddsCalculator {
                 //rank then suit ensures the highest possible ranking flush
                 Collections.sort(sevenCardHands.get(i).inDeck, new SortByRank());
                 Collections.sort(sevenCardHands.get(i).inDeck, new SortBySuit());
-                
+
                 jLoop:
                 for (int j = 0; j < 3; j++) { //for each grouping of 4 cards in the 7 card hand
                     kLoop:
@@ -210,7 +210,7 @@ class OddsCalculator {
                         }
                     }
                 }
-                
+
                 if (isFlush) {
                     handClasses.add(i, 6);
                     for (Card c: flaggedCards.inDeck) { //all five cards constitute the player's hand
@@ -222,9 +222,9 @@ class OddsCalculator {
                     handValues.add(i, handValue); 
                     continue iLoop;
                 }
-                
+
                 sevenCardHands.get(i).absSort();
-                
+
                 //checks for straights
                 jLoop:
                 for (int j = 0; j < 3; j++) {
@@ -253,7 +253,7 @@ class OddsCalculator {
                             }
                             break jLoop; //leave the j loop
                         }
-                        
+
                         //break conditions                            
                         if (j + k + 1 >= sevenCardHands.get(i).inDeck.size()) { //if the index of the "next card" is out of bounds
                             break kLoop; 
@@ -267,7 +267,7 @@ class OddsCalculator {
                             k--;
                             continue kLoop;
                         }
-                        
+
                         //straight conditions
                         if (k == 3) {
                             //you know that you have 5 cards in a row that are a straight 
@@ -279,7 +279,7 @@ class OddsCalculator {
                         }
                     }
                 }
-                
+
                 if (isStraight) {
                     handClasses.add(i, 5);
                     for (Card c: flaggedCards.inDeck) { //all five cards constitute the player's hand
@@ -291,16 +291,16 @@ class OddsCalculator {
                     handValues.add(i, handValue); 
                     continue iLoop;
                 }
-                
+
                 if (!duplicateCards.inDeck.isEmpty()) { //if the dupe deck has cards in it
                     for (int n = 0; n < duplicateCards.inDeck.size(); n++) { //for every card in the dupe deck
                         sevenCardHands.get(i).add(duplicateCards.inDeck.get(n)); //add it back to its original hand 
                     }
                     duplicateCards.clear(); //clear the dupe deck                        
                 }
-                
+
                 sevenCardHands.get(i).absSort();
-                
+
                 //checks for quads
                 jLoop:
                 for (int j = 0; j < 4; j++) {
@@ -320,7 +320,7 @@ class OddsCalculator {
                         }
                     }
                 }
-                
+
                 if (isQuads) {
                     handClasses.add(i, 8);
                     for (Card c: flaggedCards.inDeck) { //all flagged cards constitute the player's hand
@@ -331,14 +331,14 @@ class OddsCalculator {
                         fiveCardHands.get(i).add(sevenCardHands.get(i).inDeck.get(t));//add the highest ranking card in the 7 card hand as a kicker
                     }
                     fiveCardHands.get(i).absSort();
-                    
+
                     Integer[] handValue = {new Integer(flaggedCards.inDeck.get(0).rankValue)}; //the value of the hand is the rank of the quad
                     handValues.add(i, handValue);
                     continue iLoop;
                 }
-                
+
                 //checks for trips next
-                
+
                 jLoop:
                 for (int j = 0; j < 5; j++) {
                     kLoop:
@@ -357,11 +357,11 @@ class OddsCalculator {
                         }
                     }
                 }
-                
+
                 //finally checks for pairs
-                
+
                 jLoop:
-                for (int j = 0; j < 6; j++) {
+                for (int j = 0; j < sevenCardHands.get(i).inDeck.size() - 1; j++) {
                     if (!isTwoPair) {
                         if (sevenCardHands.get(i).inDeck.get(j).rankValue == sevenCardHands.get(i).inDeck.get(j + 1).rankValue) {
                             if (isPair == true) {
@@ -376,16 +376,21 @@ class OddsCalculator {
                         }
                     }                    
                 }
-                
+
                 //assigns combo hands
                 //if the hand is a full house
                 if (isTrips && isPair) { 
-                     handClasses.add(i, 7);
+                    handClasses.add(i, 7);
+                    
+                    for (int t = 0; t < 5; t++) { //first 5 flagged cards constitute the player's hand, trips are added into flagged cards before the highest pair
+                        fiveCardHands.get(i).add(flaggedCards.inDeck.get(t));
+                    }
+                    
                     int currentFiveCardSize = fiveCardHands.get(i).inDeck.size();
                     for (int t = 0; t < 5 - currentFiveCardSize; t++) { //until the five card had is five cards full, add kickers there are no additional cards in flaggedCards
                         fiveCardHands.get(i).add(sevenCardHands.get(i).inDeck.get(t));//add the highest ranking card in the 7 card hand as a kicker
                     }
-                    
+
                     Integer[] handValue = {new Integer(flaggedCards.inDeck.get(0).rankValue), new Integer(flaggedCards.inDeck.get(3).rankValue)}; //the value of the hand is the rank of the quad
                     handValues.add(i, handValue);
                     continue iLoop;  
@@ -395,12 +400,12 @@ class OddsCalculator {
                     for (int t = 0; t < 3; t++) { //first 3 flagged cards constitute the player's hand, trips are added into flagged cards before the highest pair
                         fiveCardHands.get(i).add(flaggedCards.inDeck.get(t));
                     }
-                    
+
                     int currentFiveCardSize = fiveCardHands.get(i).inDeck.size();
                     for (int t = 0; t < 5 - currentFiveCardSize; t++) { //until the five card had is five cards full, add kickers there are no additional cards in flaggedCards
                         fiveCardHands.get(i).add(sevenCardHands.get(i).inDeck.get(t));//add the highest ranking card in the 7 card hand as a kicker
                     }
-                    
+
                     Integer[] handValue = {new Integer(flaggedCards.inDeck.get(0).rankValue)}; //the value of the hand is the rank of the trip
                     handValues.add(i, handValue);
                     continue iLoop;
@@ -410,18 +415,18 @@ class OddsCalculator {
                     for (int t = 0; t < 4; t++) { //first 4 flagged cards constitute the player's hand, high pair then low pair
                         fiveCardHands.get(i).add(flaggedCards.inDeck.get(t));
                     }
-                    
+
                     //im pretty sure i accounted for this possibility already in the pair checking algorithm, ignore it for now
                     /*for (int t = 4; t < flaggedCards.inDeck.size(); t ++) { //add back a third pair if it was flagged
-                        sevenCardHands.get(i).add(flaggedCards.inDeck.get(t));
+                    sevenCardHands.get(i).add(flaggedCards.inDeck.get(t));
                     }
                     sevenCardHands.get(i).absSort(); */
-                    
+
                     int currentFiveCardSize = fiveCardHands.get(i).inDeck.size();
                     for (int t = 0; t < 5 - currentFiveCardSize; t++) { //until the five card had is five cards full, add kickers there are no additional cards in flaggedCards
                         fiveCardHands.get(i).add(sevenCardHands.get(i).inDeck.get(t));//add the highest ranking card in the 7 card hand as a kicker
                     }
-                    
+
                     Integer[] handValue = {new Integer(flaggedCards.inDeck.get(0).rankValue), new Integer(flaggedCards.inDeck.get(2).rankValue)}; //the value of the hand is the rank of the quad
                     handValues.add(i, handValue);
                     continue iLoop;
@@ -431,24 +436,24 @@ class OddsCalculator {
                     for (int t = 0; t < 2; t++) { //first 2 flagged cards constitute the player's hand
                         fiveCardHands.get(i).add(flaggedCards.inDeck.get(t));
                     }
-                    
+
                     int currentFiveCardSize = fiveCardHands.get(i).inDeck.size();
                     for (int t = 0; t < 5 - currentFiveCardSize; t++) { //until the five card had is five cards full, add kickers there are no additional cards in flaggedCards
                         fiveCardHands.get(i).add(sevenCardHands.get(i).inDeck.get(t));//add the highest ranking card in the 7 card hand as a kicker
                     }
-                    
+
                     Integer[] handValue = {new Integer(flaggedCards.inDeck.get(0).rankValue)}; //the value of the hand is the rank of the pair
                     handValues.add(i, handValue);
                     continue iLoop;
                 } else {
                     //else if the hand is just a high card 
                     handClasses.add(i, 1);
-                    
+
                     int currentFiveCardSize = fiveCardHands.get(i).inDeck.size();
                     for (int t = 0; t < 5 - currentFiveCardSize; t++) { //until the five card had is five cards full, add kickers there are no additional cards in flaggedCards
                         fiveCardHands.get(i).add(sevenCardHands.get(i).inDeck.get(t));//add the highest ranking card in the 7 card hand as a kicker
                     }
-                    
+
                     Integer[] handValue = {new Integer(fiveCardHands.get(i).inDeck.get(0).rankValue)}; //the value of the hand is the rank of the pair
                     handValues.add(i, handValue);
                     continue iLoop;
@@ -456,7 +461,7 @@ class OddsCalculator {
             }
         }
     }
-    
+
     public static void testMain() {
         Table table = new Table();
         OddsCalculator o = new OddsCalculator(table);
@@ -471,7 +476,7 @@ class OddsCalculator {
             for (Integer num: o.handValues.get(i)) {
                 System.out.println(num.intValue() + "");
             }
-            
+
         }
     }
 }   
