@@ -44,6 +44,7 @@ class OddsCalculator {
                 boolean isQuads = false;
                 boolean isTrips = false;
                 boolean isPair = false;
+                boolean isTwoPair = false;
 
                 //sorts the deck in the same way everytime
                 Collections.sort(sevenCardHands.get(i).inDeck, new SortBySuit());
@@ -300,7 +301,40 @@ class OddsCalculator {
                 
                 sevenCardHands.get(i).absSort();
                 
+                //checks for quads
+                jLoop:
+                for (int j = 0; j < 4; j++) {
+                    kLoop:
+                    for (int k = 0; k < 3; k++) {
+                        if (sevenCardHands.get(i).inDeck.get(j + k).rankValue != sevenCardHands.get(i).inDeck.get(j + k + 1).rankValue) {
+                            //if the next card is not of the same rank as the current one
+                            break kLoop;
+                        }
+                        if (k == 2) { //if the card after the third card is the same suit, youve hit a flush
+                            isQuads = true;
+                            for (int t = 1; t >= -2; t--) { //add the cards to flaggedCards and remove them from sevenCardsHands.get(i)
+                                flaggedCards.add(sevenCardHands.get(i).inDeck.get(j + k + t));
+                                sevenCardHands.get(i).remove(sevenCardHands.get(i).inDeck.get(j + k + t)); //remove it from this one
+                            }
+                            break jLoop;
+                        }
+                    }
+                }
                 
+                if (isQuads) {
+                    handClasses.add(i, 8);
+                    for (Card c: flaggedCards.inDeck) { //all flagged cards constitute the player's hand
+                        fiveCardHands.get(i).add(c);
+                    }
+                    for (int t = 0; t < 5 - fiveCardHands.get(i).inDeck.size(); t++) { //until the five card had is five cards full, add kickers
+                        fiveCardHands.get(i).add(sevenCardHands.get(i).inDeck.get(t));//add the highest ranking card in the 7 card hand as a kicker
+                    }
+                    fiveCardHands.get(i).absSort();
+                    
+                    Integer[] handValue = {new Integer(flaggedCards.inDeck.get(0).rankValue)}; //the value of the hand is the rank of the quad
+                    handValues.add(i, handValue);
+                    continue iLoop;
+                }
             }
         }
     }
