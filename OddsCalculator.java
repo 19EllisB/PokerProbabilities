@@ -470,7 +470,7 @@ class OddsCalculator {
         int winningIndex = 0;
         int splittingIndex = 0;
         boolean isSplit = false;
-        
+
         iLoop:
         for (int i = 1; i < table.players.size(); i++) {
             if (handClasses.get(i).intValue() > handClasses.get(winningIndex).intValue()) {
@@ -506,7 +506,7 @@ class OddsCalculator {
                         continue iLoop;
                     }
                 }
-                
+
                 //if you reach here, the pot is split
                 isSplit = true;
                 splittingIndex = winningIndex;
@@ -515,7 +515,7 @@ class OddsCalculator {
                 continue iLoop;
             }
         }
-        
+
         if (isSplit && splittingIndex == winningIndex) {
             //if the pot is genuinely split
             splitOuts.add(table.board.get(4)); //add the river card to split outs   
@@ -531,18 +531,53 @@ class OddsCalculator {
             total += d.inDeck.size();   
         }
         total += splitOuts.inDeck.size();
-        
+
         for (int i = 0; i < table.players.size(); i++) {
             playerOdds.add(i, new Double((playerOuts.get(i).inDeck.size() / total) * 100));   
         }
         splitOdds = (splitOuts.inDeck.size() / total) * 100;
     }
-    
+
+    void printOdds() {
+        System.out.printf("%nFinal Odds: %n%n"); //upper buffer
+        for (int i = 0; i < table.players.size(); i++) {
+            System.out.printf("%s: %6.2f%% %n", table.players.get(i).username, playerOdds.get(i).doubleValue()); // "Brent: 56.44%" 
+            if (playerOdds.get(i).doubleValue() < 50.0 && table.cardsOnBoard >= 4) { //if the player is losing/lost print their outs
+                System.out.printf("%s Outs: ", table.players.get(i).username);
+                if (playerOuts.get(i).inDeck.isEmpty()) { //if they have none
+                    System.out.printf("Drawing Dead ");
+                } else {
+                    playerOuts.get(i).absSort();
+                    for (Card c: playerOuts.get(i).inDeck) {
+                        System.out.printf("%s ", c.shortName);
+                    }
+                }
+                System.out.println("");
+            }
+        }
+
+        System.out.printf("%nSplit: %6.2f%% %n", splitOdds);
+        if (splitOdds < 50.0 && table.cardsOnBoard >= 4) { //if the player is losing/lost print their outs
+            System.out.printf("Split Outs: ");
+            if (splitOuts.inDeck.isEmpty()) { //if they have none
+                System.out.printf("Drawing Dead ");
+            } else {
+                splitOuts.absSort();
+                for (Card c: splitOuts.inDeck) {
+                    System.out.printf("%s ", c.shortName);
+                }
+            }
+            System.out.println("");
+        }
+    }
+
     public static void testMain() {
         Table table = new Table();
         OddsCalculator o = new OddsCalculator(table);
         o.appraiseHands();
         o.compareHands();
+        o.calculateOdds();
+        o.printOdds();
         for (int i = 0; i < table.players.size(); i++) {
             System.out.printf("%n Seven: %n");
             o.sevenCardHands.get(i).printComponents();
@@ -555,5 +590,10 @@ class OddsCalculator {
             }
 
         }
-    }    
+    }  
+
+    public static void main(String[] args) {
+        Table table = new Table();
+
+    }
 }   
