@@ -509,7 +509,7 @@ class OddsCalculator {
                 
                 //if you reach here, the pot is split
                 isSplit = true;
-                splittingIndex = i;
+                splittingIndex = winningIndex;
                 continue iLoop;
             } else {
                 continue iLoop;
@@ -529,6 +529,7 @@ class OddsCalculator {
         Table table = new Table();
         OddsCalculator o = new OddsCalculator(table);
         o.appraiseHands();
+        o.compareHands();
         for (int i = 0; i < table.players.size(); i++) {
             System.out.printf("%n Seven: %n");
             o.sevenCardHands.get(i).printComponents();
