@@ -11,7 +11,7 @@ class OddsCalculator {
 
     ArrayList<Double> playerOdds = new ArrayList<Double>(); //stores the individual player odds
     double splitOdds; //the odds of a split pot
-    
+
     ArrayList<Deck> playerOuts = new ArrayList<Deck>(); //stored the individual players out cards
     Deck splitOuts = new Deck(false); //stores the cards which result in a split
 
@@ -384,11 +384,11 @@ class OddsCalculator {
                 //if the hand is a full house
                 if (isTrips && isPair) { 
                     handClasses.add(i, 7);
-                    
+
                     for (int t = 0; t < 5; t++) { //first 5 flagged cards constitute the player's hand, trips are added into flagged cards before the highest pair
                         fiveCardHands.get(i).add(flaggedCards.inDeck.get(t));
                     }
-                    
+
                     int currentFiveCardSize = fiveCardHands.get(i).inDeck.size();
                     for (int t = 0; t < 5 - currentFiveCardSize; t++) { //until the five card had is five cards full, add kickers there are no additional cards in flaggedCards
                         fiveCardHands.get(i).add(sevenCardHands.get(i).inDeck.get(t));//add the highest ranking card in the 7 card hand as a kicker
@@ -464,12 +464,58 @@ class OddsCalculator {
             }
         }
     }
-    
+
     public void compareHands() {
         int winningIndex = 0;
+        int splittingIndex = 0;
+        boolean isSplit = false;
+        
+        iLoop:
         for (int i = 1; i < table.players.size(); i++) {
-            
+            if (handClasses.get(i).intValue() > handClasses.get(winningIndex).intValue()) {
+                //if the current hand is of a higher class than the winning one
+                winningIndex = i;
+                continue iLoop;
+            } else if (handClasses.get(i).intValue() == handClasses.get(winningIndex).intValue()) {
+                //if the current hand and the winning one have the same class
+                nLoop:
+                for (int n = 0; n < handValues.get(i).length; n++) {
+                    if (handValues.get(i)[n].intValue() > handValues.get(winningIndex)[n].intValue()) {
+                        //if the value of the current hand is better than 
+                        winningIndex = i;
+                        continue iLoop;
+                    } else if (handValues.get(i)[n].intValue() == handValues.get(winningIndex)[n].intValue()) {
+                        continue nLoop;
+                    } else {
+                        continue iLoop; //else the winner has the better hand
+                    }
+                }
+
+                //if you reach this loop the two hands have the same values, start comparing kickers
+                mLoop:
+                for (int m = 0; m < fiveCardHands.get(i).inDeck.size(); m++) {
+                    if (fiveCardHands.get(i).inDeck.get(m).rankValue > fiveCardHands.get(winningIndex).inDeck.get(m).rankValue) {
+                        //if the current hands mth kicker is greater in rank than the winning hands
+                        winningIndex = i;
+                        continue iLoop;
+                    } else if (fiveCardHands.get(i).inDeck.get(m).rankValue == fiveCardHands.get(winningIndex).inDeck.get(m).rankValue) {
+                        //if the two mth kickers are equal, keep checking
+                        continue mLoop;
+                    } else {
+                        continue iLoop;
+                    }
+                }
+                
+                //if you reach here, the pot is split
+                isSplit = true;
+                splittingIndex = i;
+                continue iLoop;
+            } else {
+                continue iLoop;
+            }
         }
+        
+        
     }
 
     public static void testMain() {
