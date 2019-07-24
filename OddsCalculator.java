@@ -9,7 +9,7 @@ class OddsCalculator {
     ArrayList<Integer> handClasses = new ArrayList<Integer>(); // classes can be 1-9, 1 = high card, 9 = straight flush
     ArrayList<Integer[]> handValues = new ArrayList<Integer[]>(); //the "values" of each hand, determined uniquely for each hand class
 
-    ArrayList<Double> playerOdds = new ArrayList<Double>(); //stores the individual player odds
+    ArrayList<Double> playerOdds = new ArrayList<Double>(); //stores the individual player odds as a percentage
     double splitOdds; //the odds of a split pot
 
     ArrayList<Deck> playerOuts = new ArrayList<Deck>(); //stored the individual players out cards
@@ -525,6 +525,19 @@ class OddsCalculator {
         }
     }
 
+    void calculateOdds() {
+        int total = 0; //stores the total number of outs that have been calculated
+        for (Deck d: playerOuts) {
+            total += d.inDeck.size();   
+        }
+        total += splitOuts.inDeck.size();
+        
+        for (int i = 0; i < table.players.size(); i++) {
+            playerOdds.add(i, new Double((playerOuts.get(i).inDeck.size() / total) * 100));   
+        }
+        splitOdds = (splitOuts.inDeck.size() / total) * 100;
+    }
+    
     public static void testMain() {
         Table table = new Table();
         OddsCalculator o = new OddsCalculator(table);
@@ -542,6 +555,5 @@ class OddsCalculator {
             }
 
         }
-    }
-    
+    }    
 }   
