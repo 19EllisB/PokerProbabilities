@@ -335,6 +335,7 @@ class OddsCalculator {
                     handValues.add(i, handValue);
                     continue iLoop;
                 }
+                //adding a comment to see if it's viable
             }
         }
     }
