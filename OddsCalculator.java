@@ -34,6 +34,20 @@ class OddsCalculator {
         }
     }
 
+    void repopulateSevenCardHands() {
+        //populates sevenCardHands
+        for (int i = 0; i < table.players.size(); i++) {
+            sevenCardHands.get(i).clear(); //clears them out entirely 
+
+            for (Card c: table.board.inDeck) { //adds in updated board cards
+                sevenCardHands.get(i).add(c);
+            }
+            for (Card c: table.players.get(i).hand.inDeck) { //adds in that player's pocket cards
+                sevenCardHands.get(i).add(c);
+            }
+        }
+    }
+
     void appraiseHands() { //takes a 7 card hand and evaluates its value as a 5 card hand 
         iLoop:
         for (int i = 0; i < sevenCardHands.size(); i++) { //for each hand in 7CardHands, ie for each player
@@ -593,7 +607,53 @@ class OddsCalculator {
     }  
 
     public static void main(String[] args) {
-        Table table = new Table();
+        Table externalTable = new Table();
+        switch (externalTable.cardsOnBoard) {
+            case 3: //if there are 3 board cards
+            OddsCalculator o1 = new OddsCalculator(externalTable);
+            o1.table.board.inDeck.add(3, new Card(Card.ACE, Card.SPADES)); //add in dummy cards for the following for loops
+            o1.table.board.inDeck.add(4, new Card(Card.ACE, Card.SPADES));
+            for (int i = 0; i < o1.table.deck.inDeck.size() - 1; i++) { //for every combo of two cards in the deck
+                o1.table.board.inDeck.remove(3);
+                o1.table.board.inDeck.add(3, o1.table.deck.inDeck.get(i));
+                for (int j = i + 1; j < o1.table.deck.inDeck.size(); j++) {
+                    o1.table.board.inDeck.remove(4);
+                    o1.table.board.inDeck.add(4, o1.table.deck.inDeck.get(j));
 
+                    o1.repopulateSevenCardHands();
+                    o1.appraiseHands(); 
+                    o1.compareHands();
+                }
+            }
+
+            o1.calculateOdds();
+            o1.printOdds();
+
+            externalTable.addCard();
+
+            case 4: //if the turn is down
+            OddsCalculator o2 = new OddsCalculator(externalTable);             
+            o2.table.board.inDeck.add(4, new Card(Card.ACE, Card.SPADES)); //add in dummy cards for the following for loops
+            for (int j = 0; j < o2.table.deck.inDeck.size(); j++) {
+                o2.table.board.inDeck.remove(4);
+                o2.table.board.inDeck.add(4, o2.table.deck.inDeck.get(j));
+
+                o2.repopulateSevenCardHands();
+                o2.appraiseHands(); 
+                o2.compareHands();
+            }
+            
+            o2.calculateOdds();
+            o2.printOdds();
+
+            externalTable.addCard();
+            
+            case 5: //if the river is 
+            OddsCalculator o3 = new OddsCalculator(externalTable); 
+            o3.appraiseHands(); 
+            o3.compareHands();
+            o3.calculateOdds();
+            o3.printOdds();
+        }
     }
 }   
