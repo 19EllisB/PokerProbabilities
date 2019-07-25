@@ -54,6 +54,23 @@ class Table {
         printComponents();
     }
     
+    public Table(Table template) { //essentially used to hardcode a deep copy of a pre-built Table object
+        players = new ArrayList<Player>(); //players are shallow copied 
+        board = new Deck(false); //board and deck are deep copied
+        deck = new Deck(false);
+        cardsOnBoard = template.cardsOnBoard;
+        
+        for (Player p: template.players) {
+            this.players.add(p);
+        }
+        for (Card c: template.board.inDeck) {
+            this.board.add(new Card(c.rankValue, c.suitValue));
+        }
+        for (Card c: template.deck.inDeck) {
+            this.deck.add(new Card(c.rankValue, c.suitValue));
+        }
+    }
+    
     public void printComponents() { //Prints the player's cards along with the board
         System.out.printf("Done %n %n"); //Top buffer
         for (Player p: players) { //prints players' hands
@@ -82,6 +99,8 @@ class Table {
     
     public static void main(String[] args) {
         Table t = new Table();
-        t.addCard();
+        Table tAlt = new Table(t);
+        tAlt.addCard();
+        System.out.print("");
     }
 }   

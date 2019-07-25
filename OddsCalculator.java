@@ -15,9 +15,9 @@ class OddsCalculator {
     ArrayList<Deck> playerOuts = new ArrayList<Deck>(); //stored the individual players out cards
     Deck splitOuts = new Deck(false); //stores the cards which result in a split
 
-    OddsCalculator(Table table) {
-        this.table = table;
-        this.cardsOnBoard = table.cardsOnBoard;
+    OddsCalculator(Table tempTable) {
+        this.table = new Table(tempTable);
+        this.cardsOnBoard = this.table.cardsOnBoard;
 
         //populates sevenCardHands
         for (int i = 0; i < table.players.size(); i++) {
@@ -606,7 +606,7 @@ class OddsCalculator {
         }
     }  
 
-    public static void main(String[] args) {
+    public static void main() {
         Table externalTable = new Table();
         switch (externalTable.cardsOnBoard) {
             case 3: //if there are 3 board cards
