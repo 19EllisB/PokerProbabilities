@@ -34,10 +34,11 @@ class OddsCalculator {
         }
     }
 
-    void repopulateSevenCardHands() {
-        //populates sevenCardHands
+    void repopulateSevenCardHands() { //it actually clears everything
+        //populates sevenCardHands        
         for (int i = 0; i < table.players.size(); i++) {
             sevenCardHands.get(i).clear(); //clears them out entirely 
+            fiveCardHands.get(i).clear(); //clears all the decks before appraisal, populated in appraiseHands()
 
             for (Card c: table.board.inDeck) { //adds in updated board cards
                 sevenCardHands.get(i).add(c);
@@ -46,6 +47,9 @@ class OddsCalculator {
                 sevenCardHands.get(i).add(c);
             }
         }
+        
+        handClasses.clear();
+        handValues.clear();
     }
 
     void appraiseHands() { //takes a 7 card hand and evaluates its value as a 5 card hand 
