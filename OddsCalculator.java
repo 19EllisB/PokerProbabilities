@@ -395,6 +395,7 @@ class OddsCalculator {
                                 flaggedCards.add(sevenCardHands.get(i).inDeck.get(j + t));
                                 sevenCardHands.get(i).remove(sevenCardHands.get(i).inDeck.get(j + t)); //remove it from this one
                             }
+                            j--; //fixes bug where the second pair was left undetected if its the next lowest rank in 7cardHands
                         }
                     }                    
                 }
